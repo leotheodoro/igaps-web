@@ -9,7 +9,8 @@ export const HeaderContainer = styled('header', {
   marginBottom: '$10',
 })
 
-export const ButtonGroup = styled('div', {
+export const Menu = styled('div', {
   display: 'flex',
-  gap: '$2',
+  alignItems: 'center',
+  gap: '$4',
 })

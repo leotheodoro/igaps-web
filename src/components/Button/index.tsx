@@ -11,7 +11,7 @@ export const Button = styled('button', {
   minWidth: 120,
   padding: '0 $4',
   borderRadius: '$sm',
-  fontSize: '$sm',
+
   fontWeight: '$medium',
   fontFamily: '$default',
   textAlign: 'center',
@@ -64,10 +64,10 @@ export const Button = styled('button', {
       },
 
       tertiary: {
-        color: '$gray100',
+        color: '$gray600',
 
         '&:not(:disabled):hover': {
-          color: '$white',
+          color: '$gray900',
         },
 
         '&:disabled': {
@@ -101,11 +101,24 @@ export const Button = styled('button', {
         height: 46,
       },
     },
+
+    fontSize: {
+      sm: {
+        fontSize: '$sm',
+      },
+      md: {
+        fontSize: '$md',
+      },
+      lg: {
+        fontSize: '$lg',
+      },
+    },
   },
 
   defaultVariants: {
     variant: 'primary',
     size: 'md',
+    fontSize: 'sm',
   },
 })
 
