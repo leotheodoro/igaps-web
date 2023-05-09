@@ -9,7 +9,6 @@ const registerUserBodySchema = z.object({
   name: z.string(),
   email: z.string().email(),
   password: z.string(),
-  clientId: z.string(),
 })
 
 export default async function handler(
@@ -26,9 +25,7 @@ export default async function handler(
     return res.status(401).end()
   }
 
-  const { name, email, password, clientId } = registerUserBodySchema.parse(
-    req.body,
-  )
+  const { name, email, password } = registerUserBodySchema.parse(req.body)
 
   const userExists = await prisma.user.findUnique({
     where: {
@@ -47,7 +44,6 @@ export default async function handler(
       name,
       email,
       password: hashedPassword,
-      client_id: clientId,
     },
   })
 

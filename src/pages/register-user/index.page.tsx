@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowArcLeft, UserPlus } from 'phosphor-react'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { BackToDashoard, Container, Form, FormError, Header } from './styles'
 import { Heading } from '@/components/Heading'
@@ -13,8 +13,6 @@ import { authOptions } from '../api/auth/[...nextauth].api'
 import { useRouter } from 'next/router'
 import { api } from '@/lib/axios'
 import { ToastContainer, toast } from 'react-toastify'
-import { useEffect, useMemo, useState } from 'react'
-import { SelectInput, SelectOption } from '@/components/Select'
 import { NextSeo } from 'next-seo'
 
 const signupUserFormSchema = z.object({
@@ -24,55 +22,31 @@ const signupUserFormSchema = z.object({
     .email({ message: 'Insira um endereço de e-mail válido' })
     .transform((value) => value.toLowerCase()),
   password: z.string(),
-  clientId: z.string({ required_error: 'Cliente é obrigatório' }),
 })
 
 type SignupFormData = z.infer<typeof signupUserFormSchema>
 
-interface Client {
-  id: string
-  name: string
-}
-
 export default function Signup() {
-  const [clients, setClients] = useState<Client[]>([])
   const router = useRouter()
 
   const hasCredentialsInvalidError = !!router.query.error
-
-  useEffect(() => {
-    api.get('/clients').then((response) => {
-      setClients(response.data)
-    })
-  }, [])
-
-  const clientsOptions: SelectOption[] = useMemo(() => {
-    return clients.map((client) => {
-      return {
-        key: client.id,
-        label: client.name,
-      }
-    })
-  }, [clients])
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    control,
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupUserFormSchema),
   })
 
   async function handleSignup(data: SignupFormData) {
-    const { name, email, password, clientId } = data
+    const { name, email, password } = data
 
     try {
       const response = await api.post<{ status: number }>('/users/register', {
         name,
         email,
         password,
-        clientId,
       })
       if (response.status === 201) {
         toast.success('Usuário criado com sucesso')
@@ -84,7 +58,7 @@ export default function Signup() {
 
   return (
     <>
-      <NextSeo title="Registrar usuário | 2RFP Technology" />
+      <NextSeo title="Registrar usuário | iGAPS" />
       <Container>
         <Header>
           <Heading as="strong">Registrar um novo usuário</Heading>
@@ -127,30 +101,6 @@ export default function Signup() {
 
             {hasCredentialsInvalidError && (
               <FormError size="sm">Credenciais inválidas</FormError>
-            )}
-          </label>
-
-          <label>
-            <Text size="sm">Cliente relacionado</Text>
-            <Controller
-              name="clientId"
-              control={control}
-              render={({ field }) => {
-                return (
-                  <SelectInput
-                    placeholder="Selecione um cliente"
-                    options={clientsOptions}
-                    disabled={clientsOptions.length === 0}
-                    onChange={(value: string) => {
-                      field.onChange(value)
-                    }}
-                  />
-                )
-              }}
-            />
-
-            {errors.clientId && (
-              <FormError size="sm">{errors.clientId.message}</FormError>
             )}
           </label>
 

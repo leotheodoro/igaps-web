@@ -51,7 +51,7 @@ export default function Signin() {
 
   return (
     <>
-      <NextSeo title="Login | 2RFP Technology" />
+      <NextSeo title="Login | iGAPS" />
       <Container>
         <Header>
           <Image src={igapsLogo} alt="2RFP" />

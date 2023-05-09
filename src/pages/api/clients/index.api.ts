@@ -1,4 +1,3 @@
-import { prisma } from '@/lib/prisma'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth].api'
@@ -17,7 +16,5 @@ export default async function handler(
     return res.status(401).end()
   }
 
-  const clients = await prisma.client.findMany()
-
-  return res.status(200).json(clients ?? [])
+  return res.status(200).json([])
 }

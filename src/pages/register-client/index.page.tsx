@@ -53,7 +53,7 @@ export default function Signup() {
 
   return (
     <>
-      <NextSeo title="Registrar cliente | 2RFP Technology" />
+      <NextSeo title="Registrar cliente | iGAPS" />
       <Container>
         <Header>
           <Heading as="strong">Registrar um novo cliente</Heading>

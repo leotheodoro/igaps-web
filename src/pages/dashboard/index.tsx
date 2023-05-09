@@ -8,14 +8,13 @@ import { NextSeo } from 'next-seo'
 import { DashboardContainer } from './styles'
 
 interface DashboardProps {
-  clients: User[]
   loggedUser: User
 }
 
-export default function Dashboard({ clients, loggedUser }: DashboardProps) {
+export default function Dashboard({ loggedUser }: DashboardProps) {
   return (
     <>
-      <NextSeo title="Dashboard | 2RFP Technology" />
+      <NextSeo title="Dashboard | iGAPS Technology" />
       <Header />
       <DashboardContainer>
         <h1>IGAPS PROJECT</h1>
