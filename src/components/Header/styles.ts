@@ -5,6 +5,8 @@ export const HeaderContainer = styled('header', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
+  backgroundColor: '$white',
+  marginBottom: '$10',
 })
 
 export const ButtonGroup = styled('div', {
