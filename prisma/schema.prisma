@@ -15,6 +15,7 @@ model User {
   created_at   DateTime @default(now())
   name         String? //@db.Text
   access_level Int      @default(0)
+  phone        String?
 
   @@map("users")
 }

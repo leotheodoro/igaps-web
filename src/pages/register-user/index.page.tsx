@@ -22,6 +22,7 @@ const signupUserFormSchema = z.object({
     .email({ message: 'Insira um endereço de e-mail válido' })
     .transform((value) => value.toLowerCase()),
   password: z.string(),
+  phone: z.string(),
 })
 
 type SignupFormData = z.infer<typeof signupUserFormSchema>
@@ -40,13 +41,14 @@ export default function Signup() {
   })
 
   async function handleSignup(data: SignupFormData) {
-    const { name, email, password } = data
+    const { name, email, password, phone } = data
 
     try {
       const response = await api.post<{ status: number }>('/users/register', {
         name,
         email,
         password,
+        phone,
       })
       if (response.status === 201) {
         toast.success('Usuário criado com sucesso')
@@ -101,6 +103,15 @@ export default function Signup() {
 
             {hasCredentialsInvalidError && (
               <FormError size="sm">Credenciais inválidas</FormError>
+            )}
+          </label>
+
+          <label>
+            <Text size="sm">Telefone</Text>
+            <TextInput placeholder="(00)000000000" {...register('phone')} />
+
+            {errors.phone && (
+              <FormError size="sm">{errors.phone.message}</FormError>
             )}
           </label>
 
