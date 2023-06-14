@@ -13,6 +13,9 @@ import z from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { api } from '@/lib/axios'
+import { GetServerSideProps } from 'next'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../api/auth/[...nextauth].api'
 
 const registerBusinessUnitFormSchema = z.object({
   name: z.string(),
@@ -34,16 +37,13 @@ export default function RegisterBusinessUnit() {
   async function handleSignup(data: RegisterBusinessUnitFormData) {
     const { name } = data
 
-    console.log(name)
-    return
-
     try {
-      const response = await api.post<{ status: number }>('/users/register', {
-        name,
-        email,
-        password,
-        phone,
-      })
+      const response = await api.post<{ status: number }>(
+        '/business-units/register',
+        {
+          name,
+        },
+      )
       if (response.status === 201) {
         toast.success('Unidade de negócio criada com sucesso')
       }
@@ -87,4 +87,21 @@ export default function RegisterBusinessUnit() {
       />
     </>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await getServerSession(req, res, authOptions)
+
+  if (!session || session.user.access_level !== 1) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {},
+  }
 }

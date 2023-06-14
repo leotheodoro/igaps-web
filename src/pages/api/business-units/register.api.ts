@@ -1,12 +1,18 @@
+import { prisma } from '@/lib/prisma'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
+import { z } from 'zod'
 import { authOptions } from '../auth/[...nextauth].api'
+
+const registerBusinessUnitBodySchema = z.object({
+  name: z.string(),
+})
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== 'GET') {
+  if (req.method !== 'POST') {
     return res.status(405).end()
   }
 
@@ -16,5 +22,13 @@ export default async function handler(
     return res.status(401).end()
   }
 
-  return res.status(200).json([])
+  const { name } = registerBusinessUnitBodySchema.parse(req.body)
+
+  const user = await prisma.businessUnit.create({
+    data: {
+      name,
+    },
+  })
+
+  return res.status(201).json(user)
 }

@@ -7,7 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== 'POST') {
+  if (req.method !== 'GET') {
     return res.status(405).end()
   }
 
@@ -17,7 +17,7 @@ export default async function handler(
     return res.status(401).end()
   }
 
-  const projects = await prisma.table.findMany()
+  const businessUnits = await prisma.businessUnit.findMany()
 
-  return res.status(201).json(projects ?? [])
+  return res.status(200).json(businessUnits)
 }

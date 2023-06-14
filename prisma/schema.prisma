@@ -20,50 +20,9 @@ model User {
   @@map("users")
 }
 
-// model anjos_00000001 {
-//   id              BigInt    @id
-//   status          String    //@db.VarChar(50)
-//   status_execucao String?   //@db.VarChar(50)
-//   time_exec       DateTime? //@db.DateTime(6)
-//   time_import     DateTime  //@db.DateTime(6)
-// }
+model BusinessUnit {
+  id   String @id @default(uuid())
+  name String
 
-// model esocial {
-//   id              BigInt    @id
-//   cpf             String    //@db.VarChar(50)
-//   data_nasc       String    //@db.VarChar(50)
-//   nis             String    //@db.VarChar(50)
-//   nome            String    @db.VarChar(50)
-//   status          Int?
-//   status_execucao String?   @db.VarChar(50)
-//   time_exec       DateTime? @db.DateTime(6)
-//   time_import     DateTime  @db.DateTime(6)
-// }
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
-model hibernate_sequence {
-  next_val BigInt?
-
-  @@ignore
+  @@map("business_units")
 }
-
-// model Table {
-//   id        String @id @default(uuid())
-//   name      String @db.VarChar(50)
-//   client_id String
-//   client    Client @relation(fields: [client_id], references: [id])
-
-//   @@index([client_id])
-//   @@map("tables")
-// }
-
-// model Client {
-//   id    String  @id @default(uuid())
-//   name  String  @db.VarChar(100)
-//   cnpj  String  @db.VarChar(30)
-//   email String  @db.VarChar(100)
-//   users User[]
-//   Table Table[]
-
-//   @@map("clients")
-// }

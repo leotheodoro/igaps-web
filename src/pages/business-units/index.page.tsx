@@ -8,8 +8,21 @@ import { Heading } from '@/components/Heading'
 import { Table } from '@/components/Table'
 import { Button } from '@/components/Button'
 import Link from 'next/link'
+import { GetServerSideProps } from 'next'
+import { authOptions } from '../api/auth/[...nextauth].api'
+import { getServerSession } from 'next-auth'
+import { prisma } from '@/lib/prisma'
 
-export default function BusinessUnits() {
+interface BusinessUnit {
+  id: string
+  name: string
+}
+
+interface BusinessUnitsProps {
+  businessUnits: BusinessUnit[]
+}
+
+export default function BusinessUnits({ businessUnits }: BusinessUnitsProps) {
   return (
     <>
       <NextSeo title="Unidades de negócio | iGAPS Technology" />
@@ -28,39 +41,25 @@ export default function BusinessUnits() {
         <Table>
           <thead>
             <tr>
-              <th>ID</th>
               <th>Nome</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Jalovi Centro</td>
-              <td>
-                <ButtonGroup>
-                  <Button size="sm" variant="secondary">
-                    Editar
-                  </Button>
-                  <Button size="sm" variant="danger-secondary">
-                    Excluir
-                  </Button>
-                </ButtonGroup>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Jalovi Rio Branco</td>
-              <td>
-                <ButtonGroup>
-                  <Button size="sm" variant="secondary">
-                    Editar
-                  </Button>
-                  <Button size="sm" variant="danger-secondary">
-                    Excluir
-                  </Button>
-                </ButtonGroup>
-              </td>
-            </tr>
+            {businessUnits.map((businessUnit) => (
+              <tr key={businessUnit.id}>
+                <td>{businessUnit.name}</td>
+                <td>
+                  <ButtonGroup>
+                    <Button size="sm" variant="secondary">
+                      Editar
+                    </Button>
+                    <Button size="sm" variant="danger-secondary">
+                      Excluir
+                    </Button>
+                  </ButtonGroup>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </Table>
       </Container>
@@ -72,4 +71,23 @@ export default function BusinessUnits() {
       />
     </>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await getServerSession(req, res, authOptions)
+
+  if (!session || session.user.access_level !== 1) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  const businessUnits = await prisma.businessUnit.findMany()
+
+  return {
+    props: { businessUnits },
+  }
 }
