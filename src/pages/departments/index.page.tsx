@@ -15,22 +15,22 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/axios'
 import { queryClient } from '@/lib/react-query'
 
-interface BusinessUnit {
+interface Department {
   id: string
   name: string
 }
 
-export default function BusinessUnits() {
+export default function Departments() {
   async function handleDelete(id: string) {
-    await api.delete(`business-units/delete/${id}`)
+    await api.delete(`departments/delete/${id}`)
 
-    queryClient.invalidateQueries(['business-units'])
+    queryClient.invalidateQueries(['departments'])
   }
 
-  const { data: businessUnits } = useQuery<BusinessUnit[]>(
-    ['business-units'],
+  const { data: departments } = useQuery<Department[]>(
+    ['departments'],
     async () => {
-      const response = await api.get('/business-units/list')
+      const response = await api.get('/departments/list')
 
       return response.data
     },
@@ -38,16 +38,13 @@ export default function BusinessUnits() {
 
   return (
     <>
-      <NextSeo title="Unidades de negócio | iGAPS Technology" />
+      <NextSeo title="Departamentos | iGAPS Technology" />
       <Header />
       <Container>
         <ContainerHeader>
-          <Heading>Unidades de negócio</Heading>
-          <Link
-            href="/business-units/register"
-            style={{ textDecoration: 'none' }}
-          >
-            <Button>Cadastrar unidade de negócio</Button>
+          <Heading>Departamentos</Heading>
+          <Link href="/departments/register" style={{ textDecoration: 'none' }}>
+            <Button>Cadastrar departamento</Button>
           </Link>
         </ContainerHeader>
 
@@ -58,14 +55,14 @@ export default function BusinessUnits() {
             </tr>
           </thead>
           <tbody>
-            {businessUnits &&
-              businessUnits.map((businessUnit) => (
-                <tr key={businessUnit.id}>
-                  <td>{businessUnit.name}</td>
+            {departments &&
+              departments.map((department) => (
+                <tr key={department.id}>
+                  <td>{department.name}</td>
                   <td>
                     <ButtonGroup>
                       <Link
-                        href={`/business-units/update/${businessUnit.id}`}
+                        href={`/departments/update/${department.id}`}
                         style={{ textDecoration: 'none' }}
                       >
                         <Button size="sm" variant="secondary">
@@ -75,7 +72,7 @@ export default function BusinessUnits() {
                       <Button
                         size="sm"
                         variant="danger-secondary"
-                        onClick={() => handleDelete(businessUnit.id)}
+                        onClick={() => handleDelete(department.id)}
                       >
                         Excluir
                       </Button>

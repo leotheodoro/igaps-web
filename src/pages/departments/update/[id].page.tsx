@@ -18,42 +18,42 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../../api/auth/[...nextauth].api'
 import { prisma } from '@/lib/prisma'
 
-interface UpdateBusinessUnitProps {
-  businessUnit: {
+interface UpdateDepartmentProps {
+  department: {
     id: string
     name: string
   }
 }
 
-const updateBusinessUnitFormSchema = z.object({
+const updateDepartmentFormSchema = z.object({
   name: z.string(),
 })
 
-type UpdateBusinessUnitFormData = z.infer<typeof updateBusinessUnitFormSchema>
+type UpdateDepartmentFormData = z.infer<typeof updateDepartmentFormSchema>
 
-export default function UpdateBusinessUnit({
-  businessUnit,
-}: UpdateBusinessUnitProps) {
+export default function UpdateDepartment({
+  department,
+}: UpdateDepartmentProps) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<UpdateBusinessUnitFormData>({
-    resolver: zodResolver(updateBusinessUnitFormSchema),
+  } = useForm<UpdateDepartmentFormData>({
+    resolver: zodResolver(updateDepartmentFormSchema),
   })
 
-  async function handleSignup(data: UpdateBusinessUnitFormData) {
+  async function handleSignup(data: UpdateDepartmentFormData) {
     const { name } = data
 
     try {
       const response = await api.put<{ status: number }>(
-        `/business-units/update/${businessUnit.id}`,
+        `/departments/update/${department.id}`,
         {
           name,
         },
       )
       if (response.status === 200) {
-        toast.success('Unidade de negócio editada com sucesso')
+        toast.success('Departamento editada com sucesso')
       }
     } catch (error) {
       return toast.error('Internal server error')
@@ -66,8 +66,8 @@ export default function UpdateBusinessUnit({
       <Header />
       <Container>
         <ContainerHeader>
-          <Heading>Editar {businessUnit.name}</Heading>
-          <Link href="/business-units" style={{ textDecoration: 'none' }}>
+          <Heading>Editar {department.name}</Heading>
+          <Link href="/departments" style={{ textDecoration: 'none' }}>
             <Button variant="tertiary">Voltar</Button>
           </Link>
         </ContainerHeader>
@@ -78,7 +78,7 @@ export default function UpdateBusinessUnit({
             <TextInput
               placeholder="Nome da unidade de negócio"
               {...register('name')}
-              defaultValue={businessUnit.name}
+              defaultValue={department.name}
             />
 
             {errors.name && (
@@ -116,15 +116,15 @@ export const getServerSideProps: GetServerSideProps<
     }
   }
 
-  const businessUnitId = params?.id
+  const departmentId = params?.id
 
-  const businessUnit = await prisma.businessUnit.findUnique({
-    where: { id: businessUnitId },
+  const department = await prisma.department.findUnique({
+    where: { id: departmentId },
   })
 
   return {
     props: {
-      businessUnit,
+      department,
     },
   }
 }
