@@ -50,9 +50,14 @@ export default function BusinessUnits({ businessUnits }: BusinessUnitsProps) {
                 <td>{businessUnit.name}</td>
                 <td>
                   <ButtonGroup>
-                    <Button size="sm" variant="secondary">
-                      Editar
-                    </Button>
+                    <Link
+                      href={`/business-units/update/${businessUnit.id}`}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <Button size="sm" variant="secondary">
+                        Editar
+                      </Button>
+                    </Link>
                     <Button size="sm" variant="danger-secondary">
                       Excluir
                     </Button>

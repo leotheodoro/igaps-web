@@ -1,4 +1,5 @@
 import { Box } from '@/components/Box'
+import { Text } from '@/components/Text'
 import { styled } from '@/styles'
 
 export const Container = styled(Box, {
@@ -14,8 +15,19 @@ export const ContainerHeader = styled('div', {
   marginBottom: '$4',
 })
 
-export const ButtonGroup = styled('div', {
+export const Form = styled(Box, {
+  marginTop: '$6',
   display: 'flex',
-  gap: '$2',
-  justifyContent: 'end',
+  flexDirection: 'column',
+  gap: '$4',
+
+  label: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '$2',
+  },
+})
+
+export const FormError = styled(Text, {
+  color: '#F75A68',
 })

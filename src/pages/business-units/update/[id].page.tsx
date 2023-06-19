@@ -15,37 +15,45 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { api } from '@/lib/axios'
 import { GetServerSideProps } from 'next'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../api/auth/[...nextauth].api'
+import { authOptions } from '../../api/auth/[...nextauth].api'
+import { prisma } from '@/lib/prisma'
 
-const registerBusinessUnitFormSchema = z.object({
+interface UpdateBusinessUnitProps {
+  businessUnit: {
+    id: string
+    name: string
+  }
+}
+
+const updateBusinessUnitFormSchema = z.object({
   name: z.string(),
 })
 
-type RegisterBusinessUnitFormData = z.infer<
-  typeof registerBusinessUnitFormSchema
->
+type UpdateBusinessUnitFormData = z.infer<typeof updateBusinessUnitFormSchema>
 
-export default function RegisterBusinessUnit() {
+export default function UpdateBusinessUnit({
+  businessUnit,
+}: UpdateBusinessUnitProps) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<RegisterBusinessUnitFormData>({
-    resolver: zodResolver(registerBusinessUnitFormSchema),
+  } = useForm<UpdateBusinessUnitFormData>({
+    resolver: zodResolver(updateBusinessUnitFormSchema),
   })
 
-  async function handleSignup(data: RegisterBusinessUnitFormData) {
+  async function handleSignup(data: UpdateBusinessUnitFormData) {
     const { name } = data
 
     try {
-      const response = await api.post<{ status: number }>(
-        '/business-units/register',
+      const response = await api.put<{ status: number }>(
+        `/business-units/update/${businessUnit.id}`,
         {
           name,
         },
       )
-      if (response.status === 201) {
-        toast.success('Unidade de negócio criada com sucesso')
+      if (response.status === 200) {
+        toast.success('Unidade de negócio editada com sucesso')
       }
     } catch (error) {
       return toast.error('Internal server error')
@@ -54,11 +62,11 @@ export default function RegisterBusinessUnit() {
 
   return (
     <>
-      <NextSeo title="Cadastrar unidade de negócio | iGAPS Technology" />
+      <NextSeo title="Editar unidade de negócio | iGAPS Technology" />
       <Header />
       <Container>
         <ContainerHeader>
-          <Heading>Cadastrar unidade de negócio</Heading>
+          <Heading>Editar {businessUnit.name}</Heading>
           <Link href="/business-units" style={{ textDecoration: 'none' }}>
             <Button variant="tertiary">Voltar</Button>
           </Link>
@@ -67,7 +75,11 @@ export default function RegisterBusinessUnit() {
         <Form as="form" onSubmit={handleSubmit(handleSignup)}>
           <label>
             <Text size="sm">Nome</Text>
-            <TextInput placeholder="Usuário" {...register('name')} />
+            <TextInput
+              placeholder="Nome da unidade de negócio"
+              {...register('name')}
+              defaultValue={businessUnit.name}
+            />
 
             {errors.name && (
               <FormError size="sm">{errors.name.message}</FormError>
@@ -75,7 +87,7 @@ export default function RegisterBusinessUnit() {
           </label>
 
           <Button type="submit" disabled={isSubmitting}>
-            Cadastrar unidade de negócio
+            Editar
           </Button>
         </Form>
       </Container>
@@ -89,7 +101,10 @@ export default function RegisterBusinessUnit() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps<
+  any,
+  { id: string }
+> = async ({ req, res, params }) => {
   const session = await getServerSession(req, res, authOptions)
 
   if (!session || session.user.access_level !== 1) {
@@ -101,7 +116,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     }
   }
 
+  const businessUnitId = params?.id
+
+  const businessUnit = await prisma.businessUnit.findUnique({
+    where: { id: businessUnitId },
+  })
+
   return {
-    props: {},
+    props: {
+      businessUnit,
+    },
   }
 }
