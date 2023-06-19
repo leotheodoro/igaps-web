@@ -26,6 +26,16 @@ export const Header = () => {
                 Unidades de negócio <Buildings />
               </Button>
             </Link>
+            <Link href="/departments" style={{ textDecoration: 'none' }}>
+              <Button variant="tertiary" fontSize="md">
+                Setores
+              </Button>
+            </Link>
+            <Link href="/positions" style={{ textDecoration: 'none' }}>
+              <Button variant="tertiary" fontSize="md">
+                Cargos
+              </Button>
+            </Link>
           </>
         )}
       </Menu>

@@ -7,7 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== 'DELETE') {
+  if (req.method !== 'PUT') {
     return res.status(405).end()
   }
 
@@ -23,11 +23,30 @@ export default async function handler(
     return res.status(404).send({ message: 'Business unit not found' })
   }
 
-  const businessUnit = await prisma.businessUnit.delete({
+  const oldActiveBusinessUnit = await prisma.businessUnit.findFirst({
     where: {
-      id: businessUnitId,
+      is_active: true,
     },
   })
 
-  return res.status(200).json(businessUnit)
+  if (oldActiveBusinessUnit) {
+    await prisma.businessUnit.update({
+      where: {
+        id: oldActiveBusinessUnit.id,
+      },
+      data: {
+        is_active: false,
+      },
+    })
+  }
+
+  const user = await prisma.businessUnit.update({
+    where: {
+      id: businessUnitId,
+    },
+    data: {
+      is_active: true,
+    },
+  })
+  return res.status(200).json(user)
 }

@@ -18,24 +18,11 @@ import { queryClient } from '@/lib/react-query'
 interface BusinessUnit {
   id: string
   name: string
-  is_active: boolean
 }
 
 export default function BusinessUnits() {
   async function handleDelete(id: string) {
     await api.delete(`business-units/delete/${id}`)
-
-    queryClient.invalidateQueries(['business-units'])
-  }
-
-  async function handleActivate(id: string) {
-    await api.put(`business-units/activate/${id}`)
-
-    queryClient.invalidateQueries(['business-units'])
-  }
-
-  async function handleDeactivate(id: string) {
-    await api.put(`business-units/deactivate/${id}`)
 
     queryClient.invalidateQueries(['business-units'])
   }
@@ -77,23 +64,6 @@ export default function BusinessUnits() {
                   <td>{businessUnit.name}</td>
                   <td>
                     <ButtonGroup>
-                      {businessUnit.is_active ? (
-                        <Button
-                          size="sm"
-                          variant="danger-secondary"
-                          onClick={() => handleDeactivate(businessUnit.id)}
-                        >
-                          Desativar
-                        </Button>
-                      ) : (
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => handleActivate(businessUnit.id)}
-                        >
-                          Ativar
-                        </Button>
-                      )}
                       <Link
                         href={`/business-units/update/${businessUnit.id}`}
                         style={{ textDecoration: 'none' }}

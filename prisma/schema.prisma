@@ -21,8 +21,30 @@ model User {
 }
 
 model BusinessUnit {
+  id         String       @id @default(uuid())
+  name       String
+  is_active  Boolean      @default(false)
+  Department Department[]
+
+  @@map("business_units")
+}
+
+model Department {
   id   String @id @default(uuid())
   name String
 
-  @@map("business_units")
+  businessUnit     BusinessUnit @relation(fields: [business_unit_id], references: [id])
+  business_unit_id String
+  Position         Position[]
+
+  @@map("departments")
+}
+
+model Position {
+  id   String  @id @default(uuid())
+  goal String?
+  cbo  String?
+
+  department    Department @relation(fields: [department_id], references: [id])
+  department_id String
 }
