@@ -12,17 +12,31 @@ import { GetServerSideProps } from 'next'
 import { authOptions } from '../api/auth/[...nextauth].api'
 import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '@/lib/axios'
+import { queryClient } from '@/lib/react-query'
 
 interface BusinessUnit {
   id: string
   name: string
 }
 
-interface BusinessUnitsProps {
-  businessUnits: BusinessUnit[]
-}
+export default function BusinessUnits() {
+  async function handleDelete(id: string) {
+    await api.delete(`business-units/delete/${id}`)
 
-export default function BusinessUnits({ businessUnits }: BusinessUnitsProps) {
+    queryClient.invalidateQueries(['business-units'])
+  }
+
+  const { data: businessUnits } = useQuery<BusinessUnit[]>(
+    ['business-units'],
+    async () => {
+      const response = await api.get('/business-units/list')
+
+      return response.data
+    },
+  )
+
   return (
     <>
       <NextSeo title="Unidades de negócio | iGAPS Technology" />
@@ -45,26 +59,31 @@ export default function BusinessUnits({ businessUnits }: BusinessUnitsProps) {
             </tr>
           </thead>
           <tbody>
-            {businessUnits.map((businessUnit) => (
-              <tr key={businessUnit.id}>
-                <td>{businessUnit.name}</td>
-                <td>
-                  <ButtonGroup>
-                    <Link
-                      href={`/business-units/update/${businessUnit.id}`}
-                      style={{ textDecoration: 'none' }}
-                    >
-                      <Button size="sm" variant="secondary">
-                        Editar
+            {businessUnits &&
+              businessUnits.map((businessUnit) => (
+                <tr key={businessUnit.id}>
+                  <td>{businessUnit.name}</td>
+                  <td>
+                    <ButtonGroup>
+                      <Link
+                        href={`/business-units/update/${businessUnit.id}`}
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <Button size="sm" variant="secondary">
+                          Editar
+                        </Button>
+                      </Link>
+                      <Button
+                        size="sm"
+                        variant="danger-secondary"
+                        onClick={() => handleDelete(businessUnit.id)}
+                      >
+                        Excluir
                       </Button>
-                    </Link>
-                    <Button size="sm" variant="danger-secondary">
-                      Excluir
-                    </Button>
-                  </ButtonGroup>
-                </td>
-              </tr>
-            ))}
+                    </ButtonGroup>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
       </Container>
@@ -90,9 +109,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     }
   }
 
-  const businessUnits = await prisma.businessUnit.findMany()
-
   return {
-    props: { businessUnits },
+    props: {},
   }
 }

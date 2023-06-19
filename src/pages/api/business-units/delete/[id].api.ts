@@ -1,18 +1,13 @@
 import { prisma } from '@/lib/prisma'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth'
-import { z } from 'zod'
 import { authOptions } from '../../auth/[...nextauth].api'
-
-const registerBusinessUnitBodySchema = z.object({
-  name: z.string(),
-})
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== 'PUT') {
+  if (req.method !== 'DELETE') {
     return res.status(405).end()
   }
 
@@ -28,14 +23,9 @@ export default async function handler(
     return res.status(404).send({ message: 'Business unit not found' })
   }
 
-  const { name } = registerBusinessUnitBodySchema.parse(req.body)
-
-  const user = await prisma.businessUnit.update({
+  const user = await prisma.businessUnit.delete({
     where: {
       id: businessUnitId,
-    },
-    data: {
-      name,
     },
   })
 
