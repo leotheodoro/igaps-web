@@ -43,7 +43,7 @@ export default function RegisterDepartment() {
         },
       )
       if (response.status === 201) {
-        toast.success('Departmento criado com sucesso')
+        toast.success('Departamento criado com sucesso')
       }
     } catch (error) {
       return toast.error('Internal server error')
@@ -52,11 +52,11 @@ export default function RegisterDepartment() {
 
   return (
     <>
-      <NextSeo title="Cadastrar Departmento | iGAPS Technology" />
+      <NextSeo title="Cadastrar departamento | iGAPS Technology" />
       <Header />
       <Container>
         <ContainerHeader>
-          <Heading>Cadastrar Departmento</Heading>
+          <Heading>Cadastrar departamento</Heading>
           <Link href="/departments" style={{ textDecoration: 'none' }}>
             <Button variant="tertiary">Voltar</Button>
           </Link>
@@ -73,7 +73,7 @@ export default function RegisterDepartment() {
           </label>
 
           <Button type="submit" disabled={isSubmitting}>
-            Cadastrar Departmento
+            Cadastrar departamento
           </Button>
         </Form>
       </Container>
