@@ -70,7 +70,7 @@ export const SelectInput = forwardRef<
           )}
         </SelectTrigger>
         <Select.Portal>
-          <SelectContent>
+          <SelectContent position="popper">
             <SelectScrollUpButton>
               <CaretUp />
             </SelectScrollUpButton>

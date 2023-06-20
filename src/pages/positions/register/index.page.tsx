@@ -16,26 +16,40 @@ import { api } from '@/lib/axios'
 import { GetServerSideProps } from 'next'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../../api/auth/[...nextauth].api'
+import { SelectInput, SelectOption } from '@/components/SelectInput'
+import { prisma } from '@/lib/prisma'
+import { useMemo } from 'react'
 
-const registerDepartmentFormSchema = z.object({
+const registerPositionFormSchema = z.object({
   name: z.string(),
   goal: z.string(),
   cbo: z.string(),
   department_id: z.string(),
 })
 
-type RegisterDepartmentFormData = z.infer<typeof registerDepartmentFormSchema>
+type RegisterPositionFormData = z.infer<typeof registerPositionFormSchema>
 
-export default function RegisterDepartment() {
+interface Department {
+  id: string
+  name: string
+}
+
+interface RegisterPositionProps {
+  departments: Department[]
+}
+
+export default function RegisterPosition({
+  departments,
+}: RegisterPositionProps) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<RegisterDepartmentFormData>({
-    resolver: zodResolver(registerDepartmentFormSchema),
+  } = useForm<RegisterPositionFormData>({
+    resolver: zodResolver(registerPositionFormSchema),
   })
 
-  async function handleSignup(data: RegisterDepartmentFormData) {
+  async function handleSignup(data: RegisterPositionFormData) {
     const { name } = data
 
     try {
@@ -52,6 +66,15 @@ export default function RegisterDepartment() {
       return toast.error('Internal server error')
     }
   }
+
+  const departmentOptions: SelectOption[] = useMemo(() => {
+    return departments.map((department) => {
+      return {
+        key: department.id,
+        label: department.name,
+      }
+    })
+  }, [departments])
 
   return (
     <>
@@ -92,6 +115,18 @@ export default function RegisterDepartment() {
             )}
           </label>
 
+          <label>
+            <Text size="sm">Departamento</Text>
+            <SelectInput
+              placeholder="Selecione um setor"
+              options={departmentOptions}
+            />
+
+            {errors.name && (
+              <FormError size="sm">{errors.name.message}</FormError>
+            )}
+          </label>
+
           <Button type="submit" disabled={isSubmitting}>
             Cadastrar cargo
           </Button>
@@ -119,7 +154,17 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     }
   }
 
+  const departments = await prisma.department.findMany({
+    where: {
+      businessUnit: {
+        is_active: true,
+      },
+    },
+  })
+
   return {
-    props: {},
+    props: {
+      departments,
+    },
   }
 }

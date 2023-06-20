@@ -62,6 +62,7 @@ export const StyledItem = styled(Select.Item, {
   borderRadius: 3,
   display: 'flex',
   alignItems: 'center',
+  alignContent: 'flex-start',
   height: 40,
   padding: '0 $20 0 $6',
   position: 'relative',
