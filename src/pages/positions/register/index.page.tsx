@@ -10,7 +10,7 @@ import { Text } from '@/components/Text'
 import { TextInput } from '@/components/TextInput'
 import Link from 'next/link'
 import z from 'zod'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { api } from '@/lib/axios'
 import { GetServerSideProps } from 'next'
@@ -21,10 +21,10 @@ import { prisma } from '@/lib/prisma'
 import { useMemo } from 'react'
 
 const registerPositionFormSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, { message: 'Nome do cargo é obrigatório' }),
   goal: z.string(),
   cbo: z.string(),
-  department_id: z.string(),
+  departmentId: z.string({ required_error: 'Cliente é obrigatório' }),
 })
 
 type RegisterPositionFormData = z.infer<typeof registerPositionFormSchema>
@@ -45,18 +45,22 @@ export default function RegisterPosition({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    control,
   } = useForm<RegisterPositionFormData>({
     resolver: zodResolver(registerPositionFormSchema),
   })
 
   async function handleSignup(data: RegisterPositionFormData) {
-    const { name } = data
+    const { name, goal, cbo, departmentId } = data
 
     try {
       const response = await api.post<{ status: number }>(
         '/positions/register',
         {
           name,
+          goal,
+          cbo,
+          departmentId,
         },
       )
       if (response.status === 201) {
@@ -101,8 +105,8 @@ export default function RegisterPosition({
             <Text size="sm">Objetivo</Text>
             <TextInput placeholder="Objetivo do cargo" {...register('goal')} />
 
-            {errors.name && (
-              <FormError size="sm">{errors.name.message}</FormError>
+            {errors.goal && (
+              <FormError size="sm">{errors.goal.message}</FormError>
             )}
           </label>
 
@@ -110,20 +114,32 @@ export default function RegisterPosition({
             <Text size="sm">CBO</Text>
             <TextInput placeholder="CBO do cargo" {...register('cbo')} />
 
-            {errors.name && (
-              <FormError size="sm">{errors.name.message}</FormError>
+            {errors.cbo && (
+              <FormError size="sm">{errors.cbo.message}</FormError>
             )}
           </label>
 
           <label>
             <Text size="sm">Departamento</Text>
-            <SelectInput
-              placeholder="Selecione um setor"
-              options={departmentOptions}
+            <Controller
+              name="departmentId"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <SelectInput
+                    placeholder="Selecione um setor"
+                    options={departmentOptions}
+                    disabled={departmentOptions.length === 0}
+                    onChange={(value: string) => {
+                      field.onChange(value)
+                    }}
+                  />
+                )
+              }}
             />
 
-            {errors.name && (
-              <FormError size="sm">{errors.name.message}</FormError>
+            {errors.departmentId && (
+              <FormError size="sm">{errors.departmentId.message}</FormError>
             )}
           </label>
 

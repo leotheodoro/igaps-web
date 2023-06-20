@@ -42,6 +42,7 @@ model Department {
 
 model Position {
   id   String  @id @default(uuid())
+  name String
   goal String?
   cbo  String?
 
