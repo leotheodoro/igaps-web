@@ -6,6 +6,9 @@ import { authOptions } from '../../auth/[...nextauth].api'
 
 const updateDepartmentBodySchema = z.object({
   name: z.string(),
+  goal: z.string(),
+  cbo: z.string(),
+  departmentId: z.string(),
 })
 
 export default async function handler(
@@ -22,22 +25,27 @@ export default async function handler(
     return res.status(401).end()
   }
 
-  const departmentId = String(req.query.id)
+  const positionId = String(req.query.id)
 
-  if (!departmentId) {
+  if (!positionId) {
     return res.status(404).send({ message: 'Department not found' })
   }
 
-  const { name } = updateDepartmentBodySchema.parse(req.body)
+  const { name, goal, cbo, departmentId } = updateDepartmentBodySchema.parse(
+    req.body,
+  )
 
-  const department = await prisma.department.update({
+  const position = await prisma.position.update({
     where: {
-      id: departmentId,
+      id: positionId,
     },
     data: {
       name,
+      goal,
+      cbo,
+      department_id: departmentId,
     },
   })
 
-  return res.status(200).json(department)
+  return res.status(200).json(position)
 }

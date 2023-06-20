@@ -57,7 +57,7 @@ export default function Positions() {
               <th>Nome</th>
               <th>Objetivo</th>
               <th>CBO</th>
-              <th>Cargo</th>
+              <th>Setor</th>
             </tr>
           </thead>
           <tbody>
