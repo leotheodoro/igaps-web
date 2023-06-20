@@ -26,7 +26,7 @@ interface UpdateDepartmentProps {
 }
 
 const updateDepartmentFormSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, { message: 'Nome do setor é obrigatório' }),
 })
 
 type UpdateDepartmentFormData = z.infer<typeof updateDepartmentFormSchema>

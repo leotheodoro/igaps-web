@@ -23,7 +23,5 @@ export default async function handler(
     },
   })
 
-  console.log(positions)
-
   return res.status(200).json(positions)
 }

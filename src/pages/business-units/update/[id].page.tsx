@@ -26,7 +26,9 @@ interface UpdateBusinessUnitProps {
 }
 
 const updateBusinessUnitFormSchema = z.object({
-  name: z.string(),
+  name: z
+    .string()
+    .min(1, { message: 'Nome da unidade de negócio é obrigatória' }),
 })
 
 type UpdateBusinessUnitFormData = z.infer<typeof updateBusinessUnitFormSchema>

@@ -18,7 +18,9 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../../api/auth/[...nextauth].api'
 
 const registerBusinessUnitFormSchema = z.object({
-  name: z.string(),
+  name: z
+    .string()
+    .min(1, { message: 'Nome da unidade de negócio é obrigatória' }),
 })
 
 type RegisterBusinessUnitFormData = z.infer<

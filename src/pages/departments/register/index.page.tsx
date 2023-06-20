@@ -18,7 +18,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../../api/auth/[...nextauth].api'
 
 const registerDepartmentFormSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, { message: 'Nome do setor é obrigatório' }),
 })
 
 type RegisterDepartmentFormData = z.infer<typeof registerDepartmentFormSchema>

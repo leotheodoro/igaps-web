@@ -16,12 +16,12 @@ import { ToastContainer, toast } from 'react-toastify'
 import { NextSeo } from 'next-seo'
 
 const signupUserFormSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, { message: 'Nome do usuário é obrigatório' }),
   email: z
     .string()
     .email({ message: 'Insira um endereço de e-mail válido' })
     .transform((value) => value.toLowerCase()),
-  password: z.string(),
+  password: z.string().min(6, { message: 'Senha é obrigatória' }),
   phone: z.string(),
 })
 
