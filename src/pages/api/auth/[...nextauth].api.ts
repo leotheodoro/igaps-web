@@ -47,7 +47,6 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           access_level: user.access_level,
-          client_id: user.client_id,
         }
       },
     }),
@@ -60,7 +59,6 @@ export const authOptions: NextAuthOptions = {
           ...session.user,
           id: token.id,
           access_level: token.access_level,
-          client_id: token.client_id,
         },
       }
     },
@@ -70,7 +68,6 @@ export const authOptions: NextAuthOptions = {
           ...token,
           id: user.id,
           access_level: user.access_level,
-          client_id: user.client_id,
         }
       }
 

@@ -5,7 +5,7 @@ import { signOut, useSession } from 'next-auth/react'
 
 import igapsLogo from '@/assets/igaps-logo.svg'
 import Link from 'next/link'
-import { Buildings, SignOut, UserPlus } from 'phosphor-react'
+import { Buildings, House, SignOut, UserPlus, UsersFour } from 'phosphor-react'
 
 export const Header = () => {
   const session = useSession()
@@ -28,12 +28,12 @@ export const Header = () => {
             </Link>
             <Link href="/departments" style={{ textDecoration: 'none' }}>
               <Button variant="tertiary" fontSize="md">
-                Setores
+                Setores <House />
               </Button>
             </Link>
             <Link href="/positions" style={{ textDecoration: 'none' }}>
               <Button variant="tertiary" fontSize="md">
-                Cargos
+                Cargos <UsersFour />
               </Button>
             </Link>
           </>
